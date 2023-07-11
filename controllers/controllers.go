@@ -41,6 +41,7 @@ func Registration(ctx *gin.Context) {
 		fmt.Println(err)
 	}
 	requestAsBytes := bytes.NewBuffer(request)
+	// Request
 	result, err := http.Post(url, "application/json", requestAsBytes)
 
 	if err != nil {
@@ -49,6 +50,7 @@ func Registration(ctx *gin.Context) {
 
 	defer result.Body.Close()
 
+	// Getting Response
 	body, err := io.ReadAll(result.Body)
 
 	if err != nil {
