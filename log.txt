@@ -1,0 +1,145 @@
+2023/07/12 17:12:52 Server running...
+2023/07/12 17:13:10 Doing registration...
+2023/07/12 17:13:10 Registration request :  {"timeStamp":"20230712171310","iMid":"IONPAYTEST","payMethod":"01","currency":"IDR","amt":"14500","referenceNo":"Adi_001","goodsNm":"Test transaction","billingNm":"John Doe","billingPhone":"081234567890","billingEmail":"buyer@email.com","billingAddr":"Jl. Perumnas","billingCity":"Bandung","billingState":"Jawa Barat","billingPostCd":"12345","billingCountry":"Indonesia","cartData":"{\"count\":1,\"item\":[{\"img_url\":\"https://images.ctfassets.net/od02wyo8cgm5/14Njym0dRLAHaVJywF8WFL/1910357dd0da0ae38b61bc8ad3db86e4/cloudflyer_2-fw19-grey_lime-m-g1.png\",\"goods_name\":\"Shoe\",\"goods_detail\":\"Shoe\",\"goods_amt\":529500}]}","instmntType":2,"instmntMon":1,"recurrOpt":0,"vacctValidDt":"20241212","vacctValidTm":"120000","merFixAcctId":"4","userIP":"127.0.0.1","dbProcessUrl":"https://merchant.com/api/dbProcessUrl/Notif","merchantToken":"0bdf21f35389f18795e24123221402b796eb71e42cc6ea2e89ff5a907517c88c"}
+2023/07/12 17:13:10 Registration response :  {"resultCd":"0000","resultMsg":"SUCCESS","tXid":"IONPAYTEST01202307121613091246","referenceNo":"Adi_001","payMethod":"01","amt":"14500","transDt":"20230712","transTm":"161309","description":null,"bankCd":null,"vacctNo":null,"mitraCd":null,"payNo":null,"currency":null,"goodsNm":null,"billingNm":null,"vacctValidDt":null,"vacctValidTm":null,"payValidDt":null,"payValidTm":null,"requestURL":null,"paymentExpDt":null,"paymentExpTm":null,"qrContent":null,"qrUrl":null}
+2023/07/12 17:13:14 Check inquiry status...
+2023/07/12 17:13:14 Status inquiry request :  {"timeStamp":"20230712171314","tXid":"IONPAYTEST01202307121613091246","iMid":"IONPAYTEST","referenceNo":"Adi_001","amt":"14500","merchantToken":"79297cfac014c6c7125f0e761a6c8ec61fe4318b07e3e7df00431974269e976c"}
+2023/07/12 17:13:14 Status inquiry response :  {"tXid":"IONPAYTEST01202307121613091246","iMid":"IONPAYTEST","currency":"IDR","amt":"14500","instmntMon":"1","instmntType":"2","referenceNo":"Adi_001","goodsNm":"Test transaction","payMethod":"01","billingNm":"John Doe","reqDt":"20230712","reqTm":"161309","status":"9","resultCd":"0000","resultMsg":"init","cardNo":null,"preauthToken":null,"acquBankCd":null,"issuBankCd":null,"vacctValidDt":null,"vacctValidTm":null,"vacctNo":null,"bankCd":null,"payNo":null,"mitraCd":null,"receiptCode":null,"cancelAmt":null,"transDt":null,"transTm":null,"recurringToken":null,"ccTransType":null,"payValidDt":null,"payValidTm":null,"mRefNo":null,"acquStatus":null,"cardExpYymm":null,"acquBankNm":null,"issuBankNm":null,"depositDt":null,"depositTm":null,"paymentExpDt":null,"paymentExpTm":null,"paymentTrxSn":null,"cancelTrxSn":null,"userId":null,"shopId":null}
+2023/07/12 17:13:31 Doing payment...
+2023/07/12 17:13:31 Payment request =>  {"tXid":"IONPAYTEST01202307121613091246","cardNo":"1234567890123450","cardExpYymm":"2412","cardCvv":"141","callBackUrl":"http://localhost:8080/callback","iMid":"IONPAYTEST","amt":"14500","referenceNo":"Adi_001"}
+2023/07/12 17:13:32 Payment response => 
+ 
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 5.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+<script type="text/javascript" src="/nicepay/js/bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="/nicepay/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/nicepay/css/bootstrap_backup.css" />
+<link rel="stylesheet" type="text/css" href="/nicepay/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/nicepay/css/form.css" />
+<link rel="stylesheet" type="text/css" href="/nicepay/css/bootstrap-responsive.css" />
+<link rel="stylesheet" type="text/css" href="/nicepay/css/basic.css" />
+
+<link rel="shortcut icon" href="https://www.nicepay.co.id/favicon.ico" type="image/x-icon" />
+<link rel="icon" href="https://www.nicepay.co.id/favicon.ico" type="image/x-icon" />
+
+<script type="text/javascript" src="/nicepay/js/jquery.js"></script>
+<script type="text/javascript" src="/nicepay/js/jquery.min.js"></script>
+<script type="text/javascript" src="/nicepay/js/common.js"></script>
+
+
+</head>
+
+<body >
+	
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<script type = "text/javascript">
+	function setAcsInfo(){
+		if ('01' != '05') {
+			document.tranMgr.action = $("#callbackUrl").val();
+		} else if ('01' == '05' && '' != null && '' == 'OVOE') {
+			document.tranMgr.action = $("#callbackUrl").val();
+		}
+		
+		if (document.tranMgr.cardBrand.value == null || document.tranMgr.cardBrand.value == "")
+			document.tranMgr.cardBrand.setAttribute("disabled", true);
+		
+		document.tranMgr.submit();
+	}
+
+</script>
+</head>
+<style>
+body {
+    min-width: 100%;
+    height:auto;
+min-height: 500px;
+overflow: none;
+border: none;
+background: url("/nicepay/images/rotate.gif") no-repeat center;
+}
+</style>
+<body onLoad="javascript:setAcsInfo();">
+
+	
+	
+		<form name="tranMgr" method="post" action="">
+			<input type="hidden" id="callbackUrl"  value="http://localhost:8080/callback">
+			<input type="hidden" name="resultCd"  value="0000">
+			<input type="hidden" name="resultMsg" value="SUCCESS">
+			<input type="hidden" name="tXid" value="IONPAYTEST01202307121613091246">
+			<input type="hidden" name="referenceNo" value="Adi_001">
+			<input type="hidden" name="payMethod" value="01">
+			<input type="hidden" name="amt" value="14500">
+			<input type="hidden" name="transDt" value="20230712">
+			<input type="hidden" name="transTm" value="161309">
+			<input type="hidden" name="description" value="">
+			<input type="hidden" name="authNo" value="091246">
+			<input type="hidden" name="issuBankCd" value="OTHR">
+			<input type="hidden" name="acquBankCd" value="BNIN">
+			<input type="hidden" name="cardNo" value="12345678****3450">
+			<input type="hidden" name="receiptCode" value="">
+			<input type="hidden" name="mitraCd" value="">
+			<input type="hidden" name="recurringToken" value="">
+			<input type="hidden" name="preauthToken" value="">
+			
+			<input type="hidden" name="currency" value="IDR">
+			<input type="hidden" name="goodsNm" value="Test transaction">
+			<input type="hidden" name="billingNm" value="John Doe">
+			<input type="hidden" name="ccTransType" value="1">
+			<input type="hidden" name="mRefNo" value="">
+			
+			<input type="hidden" name="instmntType" value="2">
+			<input type="hidden" name="instmntMon" value="1">
+			
+			<input type="hidden" name="cardExpYymm" value="2412">
+			
+			<input type="hidden" name="issuBankNm" value="">
+			<input type="hidden" name="acquBankNm" value="BNI">
+			
+			<input type="hidden" name="timeStamp" value="20230712161330">
+			<input type="hidden" name="merchantToken" value="cc4e932df412df5088af39981fde5335d6dcb7f8d2558ba95bb298e2b19abc32">
+			<input type="hidden" name="cardBrand" value="">
+			
+			
+			
+		</form>
+	
+
+	
+</body>
+</html>
+</body>
+
+</html>
+2023/07/12 17:13:42 Check inquiry status...
+2023/07/12 17:13:42 Status inquiry request :  {"timeStamp":"20230712171342","tXid":"IONPAYTEST01202307121613091246","iMid":"IONPAYTEST","referenceNo":"Adi_001","amt":"14500","merchantToken":"7230e13192d5c1f9b6ba520348d607cb90cce7bf56722f4b4c6abf71a0842948"}
+2023/07/12 17:13:42 Status inquiry response :  {"tXid":"IONPAYTEST01202307121613091246","iMid":"IONPAYTEST","currency":"IDR","amt":"14500","instmntMon":"1","instmntType":"2","referenceNo":"Adi_001","goodsNm":"Test transaction","payMethod":"01","billingNm":"John Doe","reqDt":"20230712","reqTm":"161309","status":"0","resultCd":"0000","resultMsg":"paid","cardNo":"12345678****3450","preauthToken":null,"acquBankCd":"BNIN","issuBankCd":"OTHR","vacctValidDt":null,"vacctValidTm":null,"vacctNo":null,"bankCd":null,"payNo":null,"mitraCd":null,"receiptCode":null,"cancelAmt":null,"transDt":"20230712","transTm":"161309","recurringToken":null,"ccTransType":"1","payValidDt":null,"payValidTm":null,"mRefNo":null,"acquStatus":"10","cardExpYymm":"2412","acquBankNm":"BNI","issuBankNm":"OTHER","depositDt":null,"depositTm":null,"paymentExpDt":null,"paymentExpTm":null,"paymentTrxSn":null,"cancelTrxSn":null,"userId":null,"shopId":null,"authNo":"091246"}

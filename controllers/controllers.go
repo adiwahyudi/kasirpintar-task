@@ -11,13 +11,14 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Registration(ctx *gin.Context) {
-	log.Println("Registration")
+	log.Println("Doing registration...")
 	url := "https://dev.nicepay.co.id/nicepay/direct/v2/registration"
 
 	newRequest := model.RegistrationRequest{}
@@ -36,18 +37,19 @@ func Registration(ctx *gin.Context) {
 	merchantToken = helper.SHA256toString(merchantToken)
 	newRequest.MerchantToken = merchantToken
 
-	log.Println("Request : ", newRequest)
 	request, err := json.Marshal(newRequest)
+	log.Println("Registration request : ", string(request))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		panic(err)
 	}
 	requestAsBytes := bytes.NewBuffer(request)
-
 	// Request to URL
 	result, err := http.Post(url, "application/json", requestAsBytes)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		panic(err)
 	}
 
 	defer result.Body.Close()
@@ -56,14 +58,16 @@ func Registration(ctx *gin.Context) {
 	body, err := io.ReadAll(result.Body)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		panic(err)
 	}
-	log.Println("Response : ", string(body))
+	log.Println("Registration response : ", string(body))
 	response := model.RegistrationResponse{}
 	err = json.Unmarshal(body, &response)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		panic(err)
 	}
 
 	// Return response
@@ -71,6 +75,7 @@ func Registration(ctx *gin.Context) {
 }
 
 func StatusInquiry(ctx *gin.Context) {
+	log.Println("Check inquiry status...")
 	url := "https://dev.nicepay.co.id/nicepay/direct/v2/inquiry"
 
 	newRequest := model.StatusInquiryRequest{}
@@ -91,9 +96,10 @@ func StatusInquiry(ctx *gin.Context) {
 	newRequest.MerchantToken = merchantToken
 
 	request, err := json.Marshal(newRequest)
-	fmt.Println(newRequest)
+	log.Println("Status inquiry request : ", string(request))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		panic(err)
 	}
 	requestAsBytes := bytes.NewBuffer(request)
 
@@ -101,7 +107,8 @@ func StatusInquiry(ctx *gin.Context) {
 	result, err := http.Post(url, "application/json", requestAsBytes)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		panic(err)
 	}
 
 	defer result.Body.Close()
@@ -110,44 +117,29 @@ func StatusInquiry(ctx *gin.Context) {
 	body, err := io.ReadAll(result.Body)
 	fmt.Println(string(body))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		panic(err)
 	}
-
+	log.Println("Status inquiry response : ", string(body))
 	response := model.StatusInquiryResponse{}
 	err = json.Unmarshal(body, &response)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		panic(err)
 	}
 
 	// Return response
 	ctx.JSON(result.StatusCode, response)
 }
 
-func Callback(ctx *gin.Context) {
-	err := ctx.Request.ParseForm()
-	if err != nil {
-		ctx.String(http.StatusBadRequest, "Error parsing form data")
-		return
-	}
-
-	for key, values := range ctx.Request.PostForm {
-		for _, value := range values {
-			fmt.Printf("Key: %s, Value: %s\n", key, value)
-		}
-	}
-
-	// Send a response
-	ctx.String(http.StatusOK, "Callback received")
-	fmt.Println("Ini Callback")
-}
-
 func Payment(ctx *gin.Context) {
+	log.Println("Doing payment...")
 
 	endpoint := "https://dev.nicepay.co.id/nicepay/direct/v2/payment?"
 
 	newPayment := model.PaymentRequest{}
-	if err := ctx.Bind(&newPayment); err != nil {
+	if err := ctx.ShouldBindJSON(&newPayment); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -157,6 +149,9 @@ func Payment(ctx *gin.Context) {
 	merchantKey := os.Getenv("MERCHANT_KEY")
 	merchantToken := timeStamp + newPayment.MerchantId + newPayment.ReferenceNo + newPayment.Amount + merchantKey
 	merchantToken = helper.SHA256toString(merchantToken)
+
+	newPaymentJson, _ := json.Marshal(newPayment)
+	log.Println("Payment request => ", string(newPaymentJson))
 
 	sendToNicePay := model.PaymentSent{
 		Timestamp:        timeStamp,
@@ -168,6 +163,7 @@ func Payment(ctx *gin.Context) {
 		MerchantToken:    merchantToken,
 	}
 
+	// Struct -> JSON -> Map, to set the encoded form data.
 	requestJson, _ := json.Marshal(sendToNicePay)
 	requestMap := map[string]string{}
 	json.Unmarshal(requestJson, &requestMap)
@@ -175,8 +171,32 @@ func Payment(ctx *gin.Context) {
 	for key, val := range requestMap {
 		data.Add(key, val)
 	}
-	queryParams := data.Encode()
-	newUrl := endpoint + queryParams
 
-	ctx.Redirect(http.StatusFound, newUrl)
+	// Hit Nicepay Payment Endpoint
+	client := &http.Client{}
+	r, _ := http.NewRequest(http.MethodPost, endpoint, strings.NewReader(data.Encode()))
+	r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	resp, _ := client.Do(r)
+	respBody, _ := io.ReadAll(resp.Body)
+
+	log.Println("Payment response => \n", string(respBody))
+
 }
+
+// func Callback(ctx *gin.Context) {
+// 	err := ctx.Request.ParseForm()
+// 	if err != nil {
+// 		ctx.String(http.StatusBadRequest, "Error parsing form data")
+// 		return
+// 	}
+
+// 	for key, values := range ctx.Request.PostForm {
+// 		for _, value := range values {
+// 			fmt.Printf("Key: %s, Value: %s\n", key, value)
+// 		}
+// 	}
+
+// 	// Send a response
+// 	ctx.String(http.StatusOK, "Callback received")
+// 	fmt.Println("Ini Callback")
+// }
